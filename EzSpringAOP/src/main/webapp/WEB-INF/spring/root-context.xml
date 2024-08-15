@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="oracle.jdbc.driver.OracleDriver"></property>
+		<property name="url"
+			value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+		<property name="username" value="EZSPRING"></property>
+		<property name="password" value="EZSPRING"></property>
+	</bean>
+	<bean id="SqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation"
+			value="classpath:mybatis-config.xml"></property>
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<bean id="SqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="SqlSessionFactory"></constructor-arg>
+	</bean>
+
+	<!-- * PointCut 표현식 정리(execution 생략) 
+	 1. * org.kh.member.model.service.*.*(..) 
+		-> service패키지에 있는 모든 클래스 및 모든 메소드 ( 매개변수는 0개 이상)
+	 2. * org.kh.member.model.service..*.*(..) 
+		-> service패키지 및 하위 패키지에 있는 모든 클래스 및 모든 메소드 (매개변수는 0개 이상) 
+		3. * org.kh.member.model.service..*.*() 
+		-> service패키지 및 하위 패키지에 있는 모든 클래스 및 모든 메소드 (매개변수 없는 것) 
+		4. * org.kh.member.model.service..*.*(*) 
+		-> service패키지 및 하위 패키지에 있는 모든 클래스 및 모든 메소드 (매개변수 1개) 
+		5. * org.kh.member.model.service..*.*(Integer,..) 
+		-> service패키지 및 하위 패키지에 있는 모든 클래스 및 모든 메소드 ( 매개변수가 1개 이상이고, 첫번째 파라미터는 정수 ) 
+		6. int org.kh.member.service..*.*(Integer,..) -> 리턴타입이 int이고 service패키지 
+		및 하위 패키지에 있는 모든 클래스 및 모든 메소드 ( 매개변수가 1개 이상이고, 첫번째 파라미터는 정수) 
+		7. int org.kh.member.service..*Impl.*(..) 
+		-> 리턴타입이 int이고 service패키지 및 하위 패키지에 있는 Impl로 끝나는 클래스의 모든 메소드 (매개변수는 0개 이상) -->
+
+	<!-- <bean id="goWork" class="com.EZ.aop.common.GoWorkAdvice"></bean> <bean 
+		id="leaveWork" class="com.EZ.aop.common.LeaveWorkAdvice"></bean> <bean id="stopWatch" 
+		class="com.EZ.aop.common.StopWatchAdvice"></bean> <aop:config> <aop:pointcut 
+		expression="execution(* com.EZ.aop..*ServiceImpl.CheckLogin(..))" id="ImplPointCut"/> 
+		<aop:pointcut expression="execution(* com.EZ.aop..*Controller.checkLogout(..))" 
+		id="ctrlPointCut"/> <aop:pointcut expression="execution(* com.EZ.aop..*Controller.*(..))" 
+		id="allPointCut"/> <aop:aspect ref="stopWatch"> <aop:around method="checkTime" 
+		pointcut-ref="allPointCut"/> </aop:aspect> <aop:aspect ref="leaveWork"> <aop:before 
+		method="printLeaveWorkTime" pointcut-ref="ctrlPointCut"/> </aop:aspect> <aop:aspect 
+		ref="goWork"> <aop:after method="printGoWorkTime" pointcut-ref="ImplPointCut"/> 
+		</aop:aspect> </aop:config> -->
+</beans>
